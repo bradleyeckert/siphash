@@ -62,10 +62,17 @@ uint64_t sip_vectors1[129] = {
 
 uint8_t key[16] = {0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf};
 uint8_t plaintext[64];
-siphash_ctx bruh;
+
+void siphash24(const uint8_t *src, uint32_t src_sz,
+               uint8_t *out, int hsize, const uint8_t key[16]) {
+    siphash_ctx ctx;
+    sip_hmac_setkey(&ctx, key, hsize);
+    while(src_sz--) sip_hmac_put(&ctx, *src++);
+    int n = sip_hmac_final(&ctx, out);
+    if (n != hsize) printf("Size error\n");
+}
 
 void makeTestVectors(int sets) { // it's a little like cheating, but...
-//int arr[3][4] = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}};
 	int i;
 	for (i=0; i<64; i++) plaintext[i] = i;
 	for (int set=0; set<sets; set++) {
@@ -74,9 +81,8 @@ void makeTestVectors(int sets) { // it's a little like cheating, but...
             if ((i % (4 / (set+1))) == 0) {
                 printf("\n    ");
             }
-            uint8_t t[64];
-            memset(t, 0, 64);
-            siphash24(&bruh, plaintext, i, t, set*8+8, key);
+            uint8_t t[64]; memset(t, 0, 64);
+            siphash24(plaintext, i, t, set*8+8, key);
             printf("0x");       // first 64-bit word of hash
             for (int k=7; k>=0; k--) printf("%02x", t[k]);
             printf("LLU, ");
@@ -97,7 +103,7 @@ int check_sip0(void) {
 
     // hash the same plaintext with 0 to 63 lengths
     for (i=0; i<64; i++) {
-        siphash24(&bruh, plaintext, i, (uint8_t *)&t[0], 8, key);
+        siphash24(plaintext, i, (uint8_t *)&t[0], 8, key);
         if (t[0] != sip_vectors0[i]) return 1;
     }
 	return 0;
@@ -109,7 +115,7 @@ int check_sip1(void) {
     uint64_t t[2];
     // hash the same plaintext with 0 to 63 lengths
     for (i=0; i<64; i++) {
-        siphash24(&bruh, plaintext, i, (uint8_t *)&t[0], 16, key);
+        siphash24(plaintext, i, (uint8_t *)&t[0], 16, key);
         if (t[0] != sip_vectors1[i*2]) return 2;
         if (t[1] != sip_vectors1[i*2+1]) return 4;
     }

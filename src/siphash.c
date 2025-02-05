@@ -1,6 +1,7 @@
 /* https://github.com/bradleyeckert/siphash
  *
  * A highly refactored version of https://github.com/majek/csiphash
+ * with a stream-friendly API. Each context uses 46 to 48 RAM bytes.
  */
 
 #include <stdint.h>
@@ -50,7 +51,6 @@ void sip_hmac_put(siphash_ctx *ctx, uint8_t c) {
 }
 
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {
-	uint64_t b = (uint64_t)ctx->length << 56;
 	uint64_t t = 0;
 	uint8_t *pt = (uint8_t *)&t;
 	uint8_t *m = (uint8_t *)&ctx->m;
@@ -63,14 +63,16 @@ int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {
 	case 2: pt[1] = m[1];
 	case 1: pt[0] = m[0];
 	}
-	b |= (uint64_t)(t);
-
+	uint64_t b = ((uint64_t)ctx->length << 56) | t;
 	ctx->v[3] ^= b;
 	doubleround(ctx->v);
 	ctx->v[0] ^= b;
 	int hashlength = ctx->hsize;
-    if (hashlength == 16) ctx->v[2] ^= 0xEE;
-    else     ctx->v[2] ^= 0xFF;
+    if (hashlength == 16) {
+        ctx->v[2] ^= 0xEE;
+    } else {
+        ctx->v[2] ^= 0xFF;
+    }
 	doubleround(ctx->v);
 	vout(ctx->v, out);
     if (hashlength == 16) {
@@ -78,13 +80,4 @@ int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {
         vout(ctx->v, &out[8]);
     }
     return hashlength;
-}
-
-// The original function tested by test.c
-
-void siphash24(siphash_ctx *ctx, const uint8_t *src, uint32_t src_sz,
-               uint8_t *out, int hsize, const uint8_t key[16]) {
-    sip_hmac_setkey(ctx, key, hsize);
-    while(src_sz--) sip_hmac_put(ctx, *src++);
-    sip_hmac_final(ctx, out);
 }

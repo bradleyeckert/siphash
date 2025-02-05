@@ -3,8 +3,8 @@
  */
 #include <stdint.h>
 
-#ifndef _SIPHASH_TINY_H_
-#define _SIPHASH_TINY_H_
+#ifndef _SIPHASH_H_
+#define _SIPHASH_H_
 
 #define ROTL64(x, b) (uint64_t)( ((x) << (b)) | ( (x) >> (64 - (b))) )
 
@@ -28,19 +28,7 @@ typedef struct
     uint8_t hsize;
 } siphash_ctx;
 
-// There's nothing like an old classic...
-
-/** Calculate HMAC with SipHash 2.4
- * @param src    Input byte array
- * @param src_sz Input length
- * @param out    Hash result
- * @param hsize  Hash length, must be 8 or 16
- * @param key    16-byte key
- */
-void siphash24(siphash_ctx *ctx, const uint8_t *src, uint32_t src_sz,
-			   uint8_t *out, int hsize, const uint8_t key[16]);
-
-// ... but use this abstraction to handle big messages without big buffers:
+// Use this API to handle big messages without big buffers:
 
 /** HMAC initialization
  * @param ctx   HMAC context
@@ -64,4 +52,4 @@ void sip_hmac_put(siphash_ctx *ctx, uint8_t c);
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out);
 
 
-#endif // _SIPHASH_TINY_H_
+#endif // _SIPHASH_H_
