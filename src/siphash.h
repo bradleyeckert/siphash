@@ -6,10 +6,6 @@
 #ifndef _SIPHASH_TINY_H_
 #define _SIPHASH_TINY_H_
 
-#ifndef SIP_HASH_LENGTH
-#define SIP_HASH_LENGTH 8
-#endif
-
 #define ROTL64(x, b) (uint64_t)( ((x) << (b)) | ( (x) >> (64 - (b))) )
 
 #define HALF_ROUND(a,b,c,d,s,t)     \
@@ -28,10 +24,11 @@
 /** Calculate HMAC with SipHash 2.4
  * @param src Input byte array
  * @param src_sz Input length
- * @param out Hash result, SIP_HASH_LENGTH bytes
+ * @param out Hash result
+ * @param big Hash length: 0=8, 1=16
  * @param key 16-byte key
  */
-void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t key[16]);
+void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, int big, const uint8_t key[16]);
 
 ///**
 // * \brief       HMAC initialization

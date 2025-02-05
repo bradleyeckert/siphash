@@ -19,7 +19,8 @@ static void vout(uint64_t *v, uint8_t *out) {
 	memcpy(out, &b, sizeof(uint64_t));
 }
 
-void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t key[16]) {
+void siphash24(const uint8_t *src, uint32_t src_sz,
+               uint8_t *out, int big, const uint8_t key[16]) {
 	const uint64_t *_key = (uint64_t *)key;
 	uint64_t k0 = (uint64_t)(_key[0]);
 	uint64_t k1 = (uint64_t)(_key[1]);
@@ -30,9 +31,7 @@ void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t 
 	v[1] = k1 ^ 0x646f72616e646f6dULL;
 	v[2] = k0 ^ 0x6c7967656e657261ULL;
 	v[3] = k1 ^ 0x7465646279746573ULL;
-#if (SIP_HASH_LENGTH == 16)
-    v[1] += 0xEE;
-#endif
+    if (big) v[1] += 0xEE;
 
 	uint64_t mi;
 	uint8_t *pt = (uint8_t *)&mi;
@@ -65,15 +64,12 @@ void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t 
 	v[3] ^= b;
 	doubleround(v);
 	v[0] ^= b;
-#if (SIP_HASH_LENGTH == 16)
-	v[2] ^= 0xEE;
-#else
-	v[2] ^= 0xFF;
-#endif
+    if (big) v[2] ^= 0xEE;
+    else v[2] ^= 0xFF;
 	doubleround(v);
 	vout(v, out);
-#if (SIP_HASH_LENGTH == 16)
-	v[1] ^= 0xDD;
-	vout(v, &out[8]);
-#endif
+    if (big) {
+        v[1] ^= 0xDD;
+        vout(v, &out[8]);
+    }
 }
