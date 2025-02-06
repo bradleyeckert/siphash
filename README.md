@@ -47,7 +47,7 @@ int sip_hmac_final(siphash_ctx *ctx, uint8_t *out);
 ```
 
 The rationale is that data is encrypted in 16-byte chunks but the extra data of AEAD can be any length.
-`ip_hmac_bloc` matches the encryption call. The API may be implemented with a block hash like AES.
+`ip_hmac_bloc` matches the encryption call. The latter may be implemented with a block hash like AES.
 
 Function pointers would use the following typedefs:
 
