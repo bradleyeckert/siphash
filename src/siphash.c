@@ -18,7 +18,7 @@ static void vout(uint64_t *v, uint8_t *out) {
 	memcpy(out, &b, sizeof(uint64_t));
 }
 
-int sip_hmac_hkey(siphash_ctx *ctx, const uint8_t *key, int hsize) {
+int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize) {
     const uint64_t *_key = (uint64_t *)key;
 	uint64_t k0 = (uint64_t)(_key[0]);
 	uint64_t k1 = (uint64_t)(_key[1]);

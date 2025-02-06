@@ -23,7 +23,7 @@ It's much better for RAM-constrained systems that deal with long messages.
  * @param hsize Expected hash length in bytes
  * @return      Actual hash length in bytes (0 if bogus)
  */
-int sip_hmac_hkey(siphash_ctx *ctx, const uint8_t *key, int hsize);
+int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize);
 
 /** HMAC append byte
  * @param ctx   HMAC context
@@ -52,7 +52,7 @@ The rationale is that data is encrypted in 16-byte chunks but the extra data of 
 Function pointers would use the following typedefs:
 
 ```C
-typedef void (*hmac_hkeyFn)((void *)ctx, const uint8_t *key);
+typedef void (*hmac_initFn)((void *)ctx, const uint8_t *key);
 typedef void (*hmac_putcFn)((void *)ctx, uint8_t c);
 typedef void (*hmac_blocFn)((void *)ctx, const uint8_t *src, unsigned int blocks);
 typedef int (*hmac_finalFn)((void *)ctx, uint8_t *out);

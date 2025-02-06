@@ -36,7 +36,7 @@ typedef struct
  * @param hsize Expected hash length in bytes
  * @return      Actual hash length in bytes (0 if bogus)
  */
-int sip_hmac_hkey(siphash_ctx *ctx, const uint8_t *key, int hsize);
+int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize);
 
 /** HMAC append byte
  * @param ctx   HMAC context
