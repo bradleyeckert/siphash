@@ -13,5 +13,5 @@ The API maps nicely to other HMACs (HMAC-SHA256, etc.) to facilitate drop-in com
 
 - [Wikipedia SipHash](https://en.wikipedia.org/wiki/SipHash)
 - [SipHash: a fast short-input PRF](https://www.aumasson.jp/siphash/siphash.pdf)
-- [Cryptanalysis of SipHash](https://eprint.iacr.org/2014/722.pdf)
+- [Cryptoanalysis of SipHash](https://eprint.iacr.org/2014/722.pdf)
 
