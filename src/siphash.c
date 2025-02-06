@@ -1,7 +1,7 @@
 /* https://github.com/bradleyeckert/siphash
  *
  * A highly refactored version of https://github.com/majek/csiphash
- * with a stream-friendly API. Each context uses 46 to 48 RAM bytes.
+ * with a stream-friendly API. Each context uses 46 to 48 bytes of RAM.
  */
 
 #include <stdint.h>
@@ -18,7 +18,7 @@ static void vout(uint64_t *v, uint8_t *out) {
 	memcpy(out, &b, sizeof(uint64_t));
 }
 
-int sip_hmac_setkey(siphash_ctx *ctx, const uint8_t *key, int hsize) {
+int sip_hmac_hkey(siphash_ctx *ctx, const uint8_t *key, int hsize) {
     const uint64_t *_key = (uint64_t *)key;
 	uint64_t k0 = (uint64_t)(_key[0]);
 	uint64_t k1 = (uint64_t)(_key[1]);
@@ -35,7 +35,7 @@ int sip_hmac_setkey(siphash_ctx *ctx, const uint8_t *key, int hsize) {
     return r;
 }
 
-void sip_hmac_put(siphash_ctx *ctx, uint8_t c) {
+void sip_hmac_putc(siphash_ctx *ctx, uint8_t c) {
 	uint8_t *s = (uint8_t *)&ctx->m;
 	uint8_t i = ctx->mp;
 	s[i++] = c;
@@ -48,6 +48,11 @@ void sip_hmac_put(siphash_ctx *ctx, uint8_t c) {
 	}
 	ctx->mp = i;
 	ctx->length++;
+}
+
+void sip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks){
+    uint32_t src_sz = blocks << 4;
+    while(src_sz--) sip_hmac_putc(ctx, *src++);
 }
 
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {

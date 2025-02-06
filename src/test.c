@@ -66,8 +66,8 @@ uint8_t plaintext[64];
 void siphash24(const uint8_t *src, uint32_t src_sz,
                uint8_t *out, int hsize, const uint8_t key[16]) {
     siphash_ctx ctx;
-    sip_hmac_setkey(&ctx, key, hsize);
-    while(src_sz--) sip_hmac_put(&ctx, *src++);
+    sip_hmac_hkey(&ctx, key, hsize);
+    while(src_sz--) sip_hmac_putc(&ctx, *src++);
     int n = sip_hmac_final(&ctx, out);
     if (n != hsize) printf("Size error\n");
 }

@@ -36,13 +36,20 @@ typedef struct
  * @param hsize Expected hash length in bytes
  * @return      Actual hash length in bytes (0 if bogus)
  */
-int sip_hmac_setkey(siphash_ctx *ctx, const uint8_t *key, int hsize);
+int sip_hmac_hkey(siphash_ctx *ctx, const uint8_t *key, int hsize);
 
 /** HMAC append byte
  * @param ctx   HMAC context
  * @param c     Byte to add to HMAC
  */
-void sip_hmac_put(siphash_ctx *ctx, uint8_t c);
+void sip_hmac_putc(siphash_ctx *ctx, uint8_t c);
+
+/** HMAC append 16-byte blocks
+ * @param ctx   HMAC context
+ * @param src   Source to add to HMAC
+ * @param blocks Number of 16-byte blocks
+ */
+void ip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
 
 /** HMAC append byte
  * @param ctx   HMAC context
