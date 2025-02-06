@@ -63,12 +63,24 @@ uint64_t sip_vectors1[129] = {
 uint8_t key[16] = {0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf};
 uint8_t plaintext[64];
 
+// Show the indirection that would allow other HMACs to be plugged in
+
+int  (*my_init)(siphash_ctx *ctx, const uint8_t *key, int hsize);
+void (*my_putc)(siphash_ctx *ctx, uint8_t c);
+int (*my_final)(siphash_ctx *ctx, uint8_t *out);
+
+void using_siphash(void) {
+    my_init = sip_hmac_init;
+    my_putc = sip_hmac_putc;
+    my_final = sip_hmac_final;
+}
+
 void siphash24(const uint8_t *src, uint32_t src_sz,
                uint8_t *out, int hsize, const uint8_t key[16]) {
     siphash_ctx ctx;
-    sip_hmac_init(&ctx, key, hsize);
-    while(src_sz--) sip_hmac_putc(&ctx, *src++);
-    int n = sip_hmac_final(&ctx, out);
+    my_init(&ctx, key, hsize);
+    while(src_sz--) my_putc(&ctx, *src++);
+    int n = my_final(&ctx, out);
     if (n != hsize) printf("Size error\n");
 }
 
@@ -123,6 +135,7 @@ int check_sip1(void) {
 }
 
 int main(void){
+    using_siphash();
 //  makeTestVectors(2);
     int r = check_sip0() | check_sip1();
     if(r == 0){
