@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "siphash.h"
+#include "./src/siphash.h"
 
 uint64_t sip_vectors0[65] = {
     0x726fdb47dd0e0e31LLU, 0x74f839c593dc67fdLLU, 0x0d6c8009d9a94f5aLLU, 0x85676696d7fb7e2dLLU,
