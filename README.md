@@ -7,7 +7,6 @@ Heavy factoring and a little-endian dependency made it small.
 
 The best part, besides the small size, is the API's stream orientation.
 It's much better for RAM-constrained systems that deal with long messages.
-The API maps nicely to other HMACs (HMAC-SHA256, etc.) to facilitate drop-in compatibility.
 
 ## References
 
@@ -37,7 +36,7 @@ void sip_hmac_putc(siphash_ctx *ctx, uint8_t c);
  * @param src   Source to add to HMAC
  * @param blocks Number of 16-byte blocks
  */
-void ip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
+void sip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
 
 /** HMAC append byte
  * @param ctx   HMAC context
