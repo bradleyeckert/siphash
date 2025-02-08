@@ -37,19 +37,14 @@ typedef struct
  * @return      Actual hash length in bytes (0 if bogus)
  */
 int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize);
+int sip_hmac_init_g(size_t *ctx, const uint8_t *key, int hsize);
 
 /** HMAC append byte
  * @param ctx   HMAC context
  * @param c     Byte to add to HMAC
  */
 void sip_hmac_putc(siphash_ctx *ctx, uint8_t c);
-
-/** HMAC append 16-byte blocks
- * @param ctx   HMAC context
- * @param src   Source to add to HMAC
- * @param blocks Number of 16-byte blocks
- */
-void ip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
+void sip_hmac_putc_g(size_t *ctx, uint8_t c);
 
 /** HMAC append byte
  * @param ctx   HMAC context
@@ -57,6 +52,7 @@ void ip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
  * @return      Hash length in bytes
  */
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out);
+int sip_hmac_final_g(size_t *ctx, uint8_t *out);
 
 
 #endif // _SIPHASH_H_

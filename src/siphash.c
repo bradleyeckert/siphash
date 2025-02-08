@@ -34,6 +34,10 @@ int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize) {
     ctx->hsize = r;
     return r;
 }
+int sip_hmac_init_g(size_t *ctx, const uint8_t *key, int hsize) {
+    return sip_hmac_init((void *)ctx, key, hsize);
+}
+
 
 void sip_hmac_putc(siphash_ctx *ctx, uint8_t c) {
 	uint8_t *s = (uint8_t *)&ctx->m;
@@ -49,11 +53,10 @@ void sip_hmac_putc(siphash_ctx *ctx, uint8_t c) {
 	ctx->mp = i;
 	ctx->length++;
 }
-
-void sip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks){
-    uint32_t src_sz = blocks << 4;
-    while(src_sz--) sip_hmac_putc(ctx, *src++);
+void sip_hmac_putc_g(size_t *ctx, uint8_t c) {
+    sip_hmac_putc((void *)ctx, c);
 }
+
 
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {
 	uint64_t t = 0;
@@ -86,3 +89,7 @@ int sip_hmac_final(siphash_ctx *ctx, uint8_t *out) {
     }
     return hashlength;
 }
+int sip_hmac_final_g(size_t *ctx, uint8_t *out) {
+    return sip_hmac_final((void *)ctx, out);
+}
+
