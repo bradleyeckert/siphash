@@ -18,10 +18,12 @@ static void vout(uint64_t *v, uint8_t *out) {
 	memcpy(out, &b, sizeof(uint64_t));
 }
 
-int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize) {
+int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, uint32_t counter, int hsize) {
     const uint64_t *_key = (uint64_t *)key;
 	uint64_t k0 = (uint64_t)(_key[0]);
 	uint64_t k1 = (uint64_t)(_key[1]);
+	k0 ^= counter;
+	k1 ^= counter;
 	int r = 0;
 	memset(ctx, 0, sizeof(siphash_ctx));
 	ctx->v[0] = k0 ^ 0x736f6d6570736575ULL;
@@ -34,8 +36,8 @@ int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize) {
     ctx->hsize = r;
     return r;
 }
-int sip_hmac_init_g(size_t *ctx, const uint8_t *key, int hsize) {
-    return sip_hmac_init((void *)ctx, key, hsize);
+int sip_hmac_init_g(size_t *ctx, const uint8_t *key, uint32_t counter, int hsize) {
+    return sip_hmac_init((void *)ctx, key, counter, hsize);
 }
 
 

@@ -65,7 +65,7 @@ uint8_t plaintext[64];
 
 // Show the indirection that would allow other HMACs to be plugged in
 
-int  (*my_init)(siphash_ctx *ctx, const uint8_t *key, int hsize);
+int  (*my_init)(siphash_ctx *ctx, const uint8_t *key, uint32_t ctr, int hsize);
 void (*my_putc)(siphash_ctx *ctx, uint8_t c);
 int (*my_final)(siphash_ctx *ctx, uint8_t *out);
 
@@ -78,7 +78,7 @@ void using_siphash(void) {
 void siphash24(const uint8_t *src, uint32_t src_sz,
                uint8_t *out, int hsize, const uint8_t key[16]) {
     siphash_ctx ctx;
-    my_init(&ctx, key, hsize);
+    my_init(&ctx, key, 0, hsize);
     while(src_sz--) my_putc(&ctx, *src++);
     int n = my_final(&ctx, out);
     if (n != hsize) printf("Size error\n");
