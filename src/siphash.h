@@ -34,10 +34,11 @@ typedef struct
  * @param ctx   HMAC context
  * @param key   Key, 32 bytes
  * @param hsize Expected hash length in bytes, 8 and 16 are valid
+ * @param ctr   Counter to prevent repeating keys
  * @return      Actual hash length in bytes (0 if bogus)
  */
-int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize);
-int sip_hmac_init_g(size_t *ctx, const uint8_t *key, int hsize);
+int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize, uint64_t ctr);
+int sip_hmac_init_g(size_t *ctx, const uint8_t *key, int hsize, uint64_t ctr);
 
 /** HMAC append byte
  * @param ctx   HMAC context
