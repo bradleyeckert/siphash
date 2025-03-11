@@ -5,8 +5,7 @@ They are macro-based to trade code size for speed.
 This version goes for minimum code size at the expense of speed.
 Heavy factoring and a little-endian dependency made it small.
 
-The best part, besides the small size, is the API's stream orientation.
-It's much better for RAM-constrained systems that deal with long messages.
+The API uses stream orientation so that RAM-constrained systems can handle long messages.
 
 ## References
 
@@ -31,13 +30,6 @@ int sip_hmac_init(siphash_ctx *ctx, const uint8_t *key, int hsize);
  */
 void sip_hmac_putc(siphash_ctx *ctx, uint8_t c);
 
-/** HMAC append 16-byte blocks
- * @param ctx   HMAC context
- * @param src   Source to add to HMAC
- * @param blocks Number of 16-byte blocks
- */
-void sip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
-
 /** HMAC append byte
  * @param ctx   HMAC context
  * @param out   Output hash
@@ -45,6 +37,3 @@ void sip_hmac_bloc(siphash_ctx *ctx, const uint8_t *src, unsigned int blocks);
  */
 int sip_hmac_final(siphash_ctx *ctx, uint8_t *out);
 ```
-
-The rationale is that data is encrypted in 16-byte chunks but the extra data of AEAD can be any length.
-`ip_hmac_bloc` matches the encryption call. The latter may be implemented with a block hash like AES.
